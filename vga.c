@@ -1,23 +1,26 @@
 /**
  * Hunter Adams (vha3@cornell.edu)
  * 
+ * Modified by:
+ * Sander Groen (sandergroen@gmail.com)
+ * 
  * VGA driver using PIO assembler
  *
  * HARDWARE CONNECTIONS
- *  - GPIO 16 ---> VGA Hsync
- *  - GPIO 17 ---> VGA Vsync
  *  - GPIO 0 ---> 390 ohm resistor ---> VGA Red
- *  - GPIO 1 ---> 1k ohm resistor ---> VGA Red
+ *  - GPIO 1 ---> 1K ohm resistor ---> VGA Red
  *  - GPIO 2 ---> 390 ohm resistor ---> VGA Green
- *  - GPIO 3 ---> 1k ohm resistor ---> VGA Green
+ *  - GPIO 3 ---> 1K ohm resistor ---> VGA Green
  *  - GPIO 4 ---> 390 ohm resistor ---> VGA Blue
- *  - GPIO 5 ---> 1k ohm resistor ---> VGA Blue
+ *  - GPIO 5 ---> 1K ohm resistor ---> VGA Blue
+ *  - GPIO 6 ---> VGA Hsync
+ *  - GPIO 7 ---> VGA Vsync
  *  - RP2040 GND ---> VGA GND
  *
  * RESOURCES USED
  *  - PIO state machines 0, 1, and 2 on PIO instance 0
  *  - DMA channels 0 and 1
- *  - 153.6 kBytes of RAM (for pixel color data)
+ *  - 614.4 kBytes of RAM (for pixel color data)
  *
  * HOW TO USE THIS CODE
  *  This code uses one DMA channel to send pixel data to a PIO state machine
@@ -27,8 +30,8 @@
  *  
  *  To help with this, I have included a function called drawPixel which takes,
  *  as arguments, a VGA x-coordinate (int), a VGA y-coordinate (int), and a
- *  pixel color (char). Only 3 bits are used for RGB, so there are only 8 possible
- *  colors. If you keep all of the code above line 200, this interface will work.
+ *  pixel color (char). Only 6 bits are used for RGB, so there are only 64 possible
+ *  colors. If you keep all of the code above line 124, this interface will work.
  *
  */
 #include <stdio.h>
@@ -56,9 +59,9 @@ unsigned char vga_data_array[TXCOUNT];
 char* address_pointer = &vga_data_array[0];
 
 // Give the I/O pins that we're using some names that make sense
+#define RED_PIN   0
 #define HSYNC     6
 #define VSYNC     7
-#define RED_PIN   0
 
 // A function for drawing a pixel with a specified color.
 // Note that because information is passed to the PIO state machines through
