@@ -6,15 +6,15 @@
 .program vsync
 .side_set 1 opt
 
-; frontporch: 10  lines
+; frontporch: 37  lines
 ; sync pulse: 2   lines
-; back porch: 33  lines (perhaps we try 32, since that's easier)
-; active for: 480 lines
+; back porch: 60  lines (perhaps we try 32, since that's easier)
+; active for: 350 lines
+;
 ; Code size could be reduced with side setting
 
 pull block                        ; Pull from FIFO to OSR (only once)
 .wrap_target                      ; Program wraps to here
-
 ; ACTIVE
 mov x, osr                        ; Copy value from OSR to x scratch register
 activefront:
@@ -23,9 +23,10 @@ activefront:
     jmp x-- activefront           ; Remain in active mode, decrementing counter
 
 ; FRONTPORCH
-set y, 9                          ;
+set y, 31                          ;
 frontporch:
     wait 1 irq 0                  ;
+    nop [1]
     jmp y-- frontporch            ;
 
 ; SYNC PULSE
@@ -35,6 +36,7 @@ wait 1 irq 0                      ; Wait for a second line
 
 ; BACKPORCH
 set y, 31                         ; First part of back porch into y scratch register (and delays a cycle)
+;set pins, 1                      ; Raise high for back porch (delaying a set cycle) - REPLACED WITH SIDESET
 backporch:
     wait 1 irq 0   side 1         ; Wait for hsync to go high - SIDESET REPLACEMENT HERE
     jmp y-- backporch             ; Remain in backporch, decrementing counter
@@ -56,7 +58,7 @@ static inline void vsync_program_init(PIO pio, uint sm, uint offset, uint pin) {
     sm_config_set_sideset_pins(&c, pin);
 
     // Set clock division (div by 5 for 25 MHz state machine)
-    sm_config_set_clkdiv(&c, 5);
+    sm_config_set_clkdiv(&c, 5) ;
 
     // Set this pin's GPIO function (connect PIO to the pad)
     pio_gpio_init(pio, pin);

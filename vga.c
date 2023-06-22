@@ -62,7 +62,7 @@ void drawPixel(int x, int y, char color) {
 
     int pixel = ((640 * y) + x);
     // Put 5 pixel values into a single 32-bit integer
-    vga_data_array[pixel / 5] |= (color << (26 - ((pixel % 5) * 6)));
+    vga_data_array[pixel / 5] |= (color << (24 - ((pixel % 5) * 6)));
 }
 
 int main() {
@@ -119,6 +119,7 @@ int main() {
     pio_sm_put_blocking(pio, hsync_sm, H_ACTIVE);
     pio_sm_put_blocking(pio, vsync_sm, V_ACTIVE);
     pio_sm_put_blocking(pio, rgb_sm, RGB_ACTIVE);
+
     pio_enable_sm_mask_in_sync(pio, ((1u << hsync_sm) | (1u << vsync_sm) | (1u << rgb_sm)));
     dma_start_channel_mask((1u << rgb_chan_0)) ;
 
