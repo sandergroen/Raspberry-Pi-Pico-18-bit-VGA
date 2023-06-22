@@ -62,7 +62,7 @@ void drawPixel(int x, int y, char color) {
 
     int pixel = ((640 * y) + x);
     // Put 5 pixel values into a single 32-bit integer
-    vga_data_array[pixel / 5] |= (color << (26 - ((pixel % 5) * 6)));
+    vga_data_array[pixel / 5] |= (color << (24 - ((pixel % 5) * 6)));
 }
 
 int main() {
