@@ -7,7 +7,7 @@
 ; Program name
 .program rgb
 
-pull block 					; Pull from FIFO to OSR (only once)
+pull block 					; Pull RGB_ACTIVE from FIFO to OSR (only once)
 mov y, osr 					; Copy value from OSR to y scratch register
 .wrap_target
 
@@ -17,15 +17,14 @@ mov x, y 					; Initialize counter variable
 wait 1 irq 1 [3]			; Wait for vsync active mode (starts 5 cycles after execution)
 
 colorout:
-	pull block				; Pull color value
-	out pins, 6	[4]			; Push out to pins
-    out pins, 6	[4]			; Push out to pins
-    out pins, 6	[4]			; Push out to pins
-    out pins, 6	[4]			; Push out to pins
-    out pins, 6	[2]			; Push out to pins
+	pull block				; Pull color value 32-bits from DMA
+	out pins, 6	[4]			; Push 6 bits out to pins
+    out pins, 6	[4]			; Push 6 bits out to pins
+    out pins, 6	[4]			; Push 6 bits out to pins
+    out pins, 6	[4]			; Push 6 bits out to pins
+    out pins, 6	[2]			; Push 6 bits out to pins
 	jmp x-- colorout		; Stay here thru horizontal active mode
 .wrap
-
 
 % c-sdk {
 static inline void rgb_program_init(PIO pio, uint sm, uint offset, uint pin) {
@@ -44,12 +43,9 @@ static inline void rgb_program_init(PIO pio, uint sm, uint offset, uint pin) {
     // sm_config_set_clkdiv(&c, 5);
 
     // Set this pin's GPIO function (connect PIO to the pad)
-    pio_gpio_init(pio, pin);
-    pio_gpio_init(pio, pin+1);
-    pio_gpio_init(pio, pin+2);
-    pio_gpio_init(pio, pin+3);
-    pio_gpio_init(pio, pin+4);
-    pio_gpio_init(pio, pin+5);
+    for(int i=0; i<6;i++) {
+        pio_gpio_init(pio, pin+i);
+    }
     
     // Set the pin direction to output at the PIO (6 pins)
     pio_sm_set_consecutive_pindirs(pio, sm, pin, 6, true);
