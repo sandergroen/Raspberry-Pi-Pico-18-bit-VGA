@@ -130,13 +130,11 @@ int main()
 
     while (true)
     {
-        int x = 0;
-        int y = 0;
         int index = 0;
         int xcounter = 0;
         int ycounter = 0;
 
-        for (y = 0; y < 480; y++)
+        for (int y = 0; y < 480; y++)
         {
             if (ycounter == 8)
             {
@@ -144,13 +142,15 @@ int main()
                 index = (index + 1) % 64;
             }
             ycounter += 1;
-            for (x = 0; x < 640; x++)
+
+            for (int x = 0; x < 640; x++)
             {
                 if (xcounter == 10)
                 {
                     xcounter = 0;
                     index = (index + 1) % 64;
                 }
+
                 xcounter += 1;
                 drawPixel(x, y, index);
             }

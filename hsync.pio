@@ -2,7 +2,6 @@
 ; Hunter Adams (vha3@cornell.edu)
 ; HSync generation for VGA driver
 
-
 ; Program name
 .program hsync
 
@@ -14,8 +13,6 @@
 ; High for 704 cycles (28.16us at 25MHz)
 ; Low  for 96  cycles (3.84us at 25MHz)
 ; Total period of 800 cycles (32us at 25MHz)
-;
-
 
 pull block              ; Pull from FIFO to OSR (only happens once)
 .wrap_target            ; Program wraps to here
@@ -37,9 +34,6 @@ backporch:
     set pins, 1 [12]    ; High for back porch (45 cycles)
     irq 0       [1]     ; Set IRQ to signal end of line (47 cycles)
 .wrap
-
-
-
 
 % c-sdk {
 static inline void hsync_program_init(PIO pio, uint sm, uint offset, uint pin) {
