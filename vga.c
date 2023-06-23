@@ -20,7 +20,7 @@
  * RESOURCES USED
  *  - PIO state machines 0, 1, and 2 on PIO instance 0
  *  - DMA channels 0 and 1
- *  - 224 kBytes of RAM (for pixel color data)
+ *  - 224.8 kBytes of RAM (for pixel color data)
  *
  * HOW TO USE THIS CODE
  *  This code uses one DMA channel to send pixel data to a PIO state machine
