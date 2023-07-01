@@ -31,7 +31,6 @@ pulse:
 ; BACKPORCH
 backporch:
     set pins, 1 [31]    ; High for back porch (32 cycles)
-    ; set pins, 1 [12]    ; High for back porch (45 cycles)
     irq 0       [13]     ; Set IRQ to signal end of line (47 cycles)
 .wrap
 
